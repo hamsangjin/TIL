@@ -5,9 +5,7 @@
 ## 목차
 - [회원 웹 기능 - 홈 화면 추가](#회원-웹-기능---홈-화면-추가)
 - [회원 웹 기능 - 등록](#회원-웹-기능---등록)
-<!--
 - [회원 웹 기능 - 조회](#회원-웹-기능---조회)
--->
 
 </br>
 
@@ -82,6 +80,7 @@ public class HomeController {
 
 ---
 
+</br>
 
 ## 회원 웹 기능 - 등록
 이제 회원가입으로 이동할 수 있게 `MemberController.java`에 아래 코드를 추가해준다.
@@ -207,8 +206,82 @@ public String create(MemberForm form) {
 
 이 사진을 보면 `member`에 `test`라는 `name`이 잘 저장된 것을 알 수 있다.
 
+</br>
+
 ---
 
-<!--
+</br>
+
 ## 회원 웹 기능 - 조회
--->
+
+
+이제 회원 목록을 보여주는 `memberList.html` 파일을 불러와줄 홈 컨트롤러를 추가해준다.
+```java
+@GetMapping(value = "/members")
+public String list(Model model) {
+  List<Member> members = memberService.findMembers();
+  model.addAttribute("members", members);
+  return "members/memberList";
+}
+```
+
+</br>
+
+이제 `@GetMapping`으로 매핑되어 있는 `"/members"`에 화면을 구성할 `memberList.html`을 만들어보자
+
+- main/resources/templates/members/memberList.html
+```html
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div class="container">
+    <div>
+        <table>
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>이름</th> </tr>
+            </thead>
+            <tbody>
+            <tr th:each="member : ${members}">
+                <td th:text="${member.id}"></td>
+                <td th:text="${member.name}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div> <!-- /container -->
+
+</body>
+</html>
+
+```
+
+</br>
+
+- `실행결과 - http://localhost:8080/members`
+<p align=center><img width="714" alt="스크린샷 2023-12-06 16 36 18" src="https://github.com/hamsangjin/TIL/assets/103736614/f2f524f5-fffd-4fb4-a190-f172995c31a5"></p>
+
+</br>
+
+> - `<tr th:each="member : ${members}">` : 여기서 `$`는 모델에 담긴 데이터 중 `members`의 이름으로 된 객체를 꺼내겠다는 의미이다.
+> - `th:each` : Thymeleaf에서 특정 요소를 for문처럼 반복하는 방법으로 여기선 `members`에 저장된 회원을 하나씩 꺼내서 `id`와 `name`을 출력해주는 역할을 했다.
+> - 따라서 model에서 `$` 표시가 되어 있는 `members` 객체를 꺼낸 후, `th:each`문으로 `members`에 저장된 회원을 하나씩 꺼내 `id`와 `name`을 출력해주는 것이다. 
+
+</br>
+
+**이제 회원가입을 통해 실제로 회원을 등록하고 회원 목록이 존재하는지 확인해보자**
+
+</br>
+
+- `실행결과 - 두 명의 회원이 있는 상태`
+<p align=center><img width="736" alt="스크린샷 2023-12-06 16 34 51" src="https://github.com/hamsangjin/TIL/assets/103736614/ec6d1ffb-a65e-440e-b069-25c23814958f"></p>
+
+이렇게 회원가입되어 있는 두 회원이 회원 목록에 잘 나타나는 것을 확인할 수 있다.
+
+</br>
+
+> 현재는 **데이터베이스**가 구현되지 않아 가입된 회원들은 **메모리**에 있기 때문에 서버를 내렸다가 다시 키면 회원 가입한 데이터들이 지워진다. 따라서 **파일이나 데이터베이스**에 저장해야 할 필요성이 있다.
+
