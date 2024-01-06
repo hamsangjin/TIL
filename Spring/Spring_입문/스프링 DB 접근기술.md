@@ -76,3 +76,27 @@
 --- 
 
 ## 순수 Jdbc
+
+
+### Jdbc 환경설정
+> 지금 진행하는 것은 오래된 방법이라, 이런 식으로 사용했었구나 ~ 라는 식으로 가볍게 듣는 것이 좋다.
+
+
+먼저 `build.gradle` 파일에 `jdbc`, `h2 데이터베이스` 관련 라이브러리를 추가해주자
+<p align=center>
+<img width="964" alt="스크린샷 2024-01-05 15 13 59" src="https://github.com/hamsangjin/TIL/assets/103736614/2243c850-6222-4533-9d00-586e8479185a">
+</p>
+
+* java는 DB랑 연결하려면 JDBC 드라이버가 꼭 있어야 한다.
+
+</br>
+
+이제 DB와 연결하기 위해서는 접속 정보가 필요한데, 스프링 부트에서는 `application.properties`에 경로만 넣으면 드라이버 설치 세팅이 끝난다.
+<img width="767" alt="스크린샷 2024-01-05 15 37 13" src="https://github.com/hamsangjin/TIL/assets/103736614/db4541e9-edde-45e6-aae8-c12d5259bffe">
+* 스프링부트 2.4부터 `spring.datasource.username=sa`을 추가해야 오류가 발생 안 한다.
+
+### Jdbc 리포지토리 구현
+
+먼저 구현 클래스를 만들어 `MemberRepository`의 메소드들을 불러와준다.
+<img width="926" alt="스크린샷 2024-01-05 15 44 36" src="https://github.com/hamsangjin/TIL/assets/103736614/3f16f61f-ae0b-4bba-aebd-6d72bedb52ca">
+
