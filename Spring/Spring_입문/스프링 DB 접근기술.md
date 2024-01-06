@@ -97,6 +97,124 @@
 
 ### Jdbc 리포지토리 구현
 
-먼저 구현 클래스를 만들어 `MemberRepository`의 메소드들을 불러와준다.
-<img width="926" alt="스크린샷 2024-01-05 15 44 36" src="https://github.com/hamsangjin/TIL/assets/103736614/3f16f61f-ae0b-4bba-aebd-6d72bedb52ca">
+먼저 전에 생성했었던 구현체 `MemberRepository`를 이용해 메소드들을 불러오고 수정해준다.
+
+- main/java/hello/hellospring/repository/JdbcMemberRepository.java
+```java
+package hello.hellospring.repository;
+
+import hello.hellospring.domain.Member;
+import org.springframework.jdbc.datasource.DataSourceUtils;
+
+import javax.sql.DataSource;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+public class JdbcMemberRepository implements MemberRepository {
+    private final DataSource dataSource;
+
+    public JdbcMemberRepository(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    @Override
+    public Member save(Member member) {
+        String sql = "insert into member(name) values(?)";
+
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        ...
+```
+</br>
+
+### 스프링 설정 변경
+
+지금까지는 Spring Config에서 `MemoryMemberRepository`를 스프링 빈에 등록해 사용하고 있었다.
+
+하지만 이제 h2 데이터베이스를 사용해 동작해야하니까 `MemoryMemberRepository`이 아닌 `JdbcMemberRepository`로 변경해준다.
+
+- `DataSource` : 데이터베이스 커넥션을 획득할 때 사용하는 객체로, 스프링 부트는 데이터베이스 커넥션 정보를 바탕으로 DataSource를 생성하고 스프링 빈으로 만들어둔다. 그래야 DI(의존성 주입)을 받을 수 있다.
+
+- main/java/hello/hellospring/service/SpringConfig.java
+```java
+package hello.hellospring.service;
+
+import hello.hellospring.repository.JdbcMemberRepository;
+import hello.hellospring.repository.MemberRepository;
+import hello.hellospring.repository.MemoryMemberRepository;
+import hello.hellospring.service.MemberService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import javax.sql.DataSource;
+
+@Configuration
+public class SpringConfig {
+
+    private final DataSource dataSource;
+
+    @Autowired
+    public SpringConfig(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    @Bean
+    public MemberService memberService() {
+        return new MemberService(memberRepository());
+    }
+
+    @Bean
+    public MemberRepository memberRepository(){
+//        return new MemoryMemberRepository();
+        return new JdbcMemberRepository(dataSource);
+    }
+}
+```
+
+</br>
+
+현재 변경한거라고는 `SpringConfig` 설정과 H2 드라이버 설치만 진행했다. </br>
+이때, 메모리로 동작하던 코드가 h2 데이터베이스를 이용해 동작하는지 확인해보자. </br>
+
+회원에 함상진을 추가하고, 회원 목록을 확인해보자.
+<p align=center>
+<img width="331" height="330 alt="스크린샷 2024-01-06 17 41 35" src="https://github.com/hamsangjin/TIL/assets/103736614/c898ef60-aab9-4577-afc8-078233766a4d">
+<img width="331" height="330 alt="스크린샷 2024-01-06 17 39 37" src="https://github.com/hamsangjin/TIL/assets/103736614/7370dff5-bb24-4208-8c37-9270195022a6">
+</p>
+
+</br>
+
+기존에 등록했던 **spring1**, **spring2**와 새로운 회원 **함상진**이 추가된 걸 볼 수 있다.
+
+</br>
+
+### 구현 클래스 추가 이미지
+<p align=center>
+<img width="601" alt="스크린샷 2024-01-06 17 48 22" src="https://github.com/hamsangjin/TIL/assets/103736614/801ef4a5-1c2b-4d1f-8295-b7fa246974f5">
+</p>
+
+- `다형성` : 인터페이스를 가지고 이것저것 구현할 수 있는 기능으로, 스프링 컨테이너가 지원을 해주며, DI를 통해 쉽게 할 수 있다. 
+
+</br>
+
+### 스프링 설정 이미지
+<p align=center>
+<img width="597" alt="스크린샷 2024-01-06 17 50 41" src="https://github.com/hamsangjin/TIL/assets/103736614/35a9c041-cbca-47bc-864a-78a0e6fcd20e">
+</p>
+</br>
+
+- `개방 폐쇄 원칙(OCP, Open-Closed Principle)` : SOLID 중 하나로, 확장에는 열려있고, 수정(변경)에는 닫혀있다.
+- 스프링의 DI를 사용하면 기존 코드를 **전혀 손대지 않고, 설정만으로 구현 클래스를 변경**할 수 있다.
+- 이제 **메모리**가 아닌 DB에 저장하므로 서버를 다시 실행해도 데이터가 안전하게 저장되어 있다.
+
+</br>
+
+
+
+
+
 
