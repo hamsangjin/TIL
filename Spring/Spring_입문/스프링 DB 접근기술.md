@@ -14,6 +14,8 @@
 
 ---
 
+</br>
+
 ## H2 데이터베이스 설치
 
 ### 설치 및 실행
@@ -73,10 +75,13 @@
 <img width="786" alt="스크린샷 2024-01-05 15 04 53" src="https://github.com/hamsangjin/TIL/assets/103736614/68d948b2-ca8d-4077-b588-af6d02b93284">
 </p>
 
---- 
+</br>
+
+---
+
+</br>
 
 ## 순수 Jdbc
-
 
 ### Jdbc 환경설정
 > 지금 진행하는 것은 오래된 방법이라, 이런 식으로 사용했었구나 ~ 라는 식으로 가볍게 듣는 것이 좋다.
@@ -213,6 +218,10 @@ public class SpringConfig {
 
 </br>
 
+---
+
+</br>
+
 ## 스프링 통합 테스트
 
 스프링 컨테이너와 DB까지 연결했으니 이제 통합 테스트를 해보자
@@ -289,6 +298,126 @@ class MemberServiceIntegrationTest {
 
 </br>
 
-## 스프링 JdbcTemplate
+---
+
+</br>
+
+## 스프링 JdbcTemplate
+
+- 순수 `Jdbc`와 동일하게 환경설정을 하면 된다.
+- `JdbcTemplate`는 JDBC API에서 봤던 반복 코드를 대부분 제거해주지만, SQL은 직접 작성해야 한다.
 
 ### 스프링 JdbcTemplate 회원 리포지토리
+
+- main/java/hello/hellospring/repository/JdbcTemplateMemberRepository.java
+
+```java
+package hello.hellospring.repository;
+
+import hello.hellospring.domain.Member;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+
+import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+public class JdbcTemplateMemberRepository implements MemberRepository{
+
+    private final JdbcTemplate jdbcTemplate;
+
+    // 생성자가 딱 하나만 있다면 자동으로 스프링빈으로 등록되므로
+    // @Autowired를 생략할 수 있다.
+    // @Autowired
+    public JdbcTemplateMemberRepository(DataSource dataSource) {
+        jdbcTemplate = new JdbcTemplate(dataSource);
+    }
+
+    @Override
+    public Member save(Member member) {
+        SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+        jdbcInsert.withTableName("member").usingGeneratedKeyColumns("id");
+
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("name", member.getName());
+
+        Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
+        member.setId(key.longValue());
+
+        return member;
+    }
+
+    @Override
+    public Optional<Member> findById(Long id) {
+        List<Member> result = jdbcTemplate.query("select * from member where id = ?", memberRowMapper(), id);
+        return result.stream().findAny();
+    }
+
+    @Override
+    public Optional<Member> findByName(String name) {
+        List<Member> result = jdbcTemplate.query("select * from member where name = ?", memberRowMapper(), name);
+        return result.stream().findAny();
+    }
+
+    @Override
+    public List<Member> findAll() {
+        return jdbcTemplate.query("select * from member", memberRowMapper());
+    }
+
+    private RowMapper<Member> memberRowMapper(){
+        return (rs, rowNum) -> {
+            Member member = new Member();
+            member.setId(rs.getLong("id"));
+            member.setName(rs.getString("name"));
+            return member;
+        };
+    }
+}
+
+```
+
+- `jdbcTemplate.query()`와 `RowMapper`를 통해 순수 JDBC보다 코드가 간략해진 걸 볼 수 있다.
+  - `jdbcTemplate.query()` : JdbcTemplate에서 `SELECT` 쿼리문을 다룰 때 사용되며, `INSERT`, `DELETE`, `UPDATE` 쿼리문들은 `jdbcTemplate.update()`를 사용한다.
+  - `RowMapper` : row 단위로 ResultSet의 row를 매핑하기 위해 JdbcTemplate에서 사용하는 인터페이스
+
+### JdbcTemplate을 사용하도록 스프링 설정 변경
+
+이제 SpringConfig에서 스프링빈을 등록할 때 `JdbcMemberRepository`이 아닌 `JdbcTemplateMemberRepository`로 변경해주자
+<p align=center>
+<img width="497" alt="스크린샷 2024-01-10 18 12 40" src="https://github.com/hamsangjin/TIL/assets/103736614/abb55970-327f-44de-b35c-190f6d590bae">
+</p>
+
+</br>
+
+그 후, **테스트**해보면 정상적으로 동작하는 것을 볼 수 있다.
+
+<p align=center>
+<img width="376" alt="스크린샷 2024-01-10 18 10 35" src="https://github.com/hamsangjin/TIL/assets/103736614/b9840a61-2eb7-46d2-95d8-3f7490db94d4">
+</p>
+
+</br>
+
+---
+
+</br>
+
+## JPA
+
+### build.gradle 파일에 JPA, h2 데이터베이스 관련 라이브러리 추가
+
+### 스프링 부트에 JPA 설정 추가
+
+### JPA 엔티티 매핑
+
+### JPA 회원 리포지토리
+
+### 서비스 계층에 트랜잭션 추가
+
+
