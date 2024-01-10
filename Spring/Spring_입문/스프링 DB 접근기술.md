@@ -213,8 +213,82 @@ public class SpringConfig {
 
 </br>
 
+## 스프링 통합 테스트
 
+스프링 컨테이너와 DB까지 연결했으니 이제 통합 테스트를 해보자
 
+### 회원 서비스 스프링 통합테스트
 
+> 기존에 했었던 테스트들은 순수 java 코드를 가지고 테스트를 했었지만, </br>
+> 이제는 스프링부트가 데이터베이스 커넥션 정보를 들고있기 때문에 스프링을 이용해 통합테스트를 해야한다.
 
+- test/java/hello/hellospring/service/MemberServiceIntegrationTest.java
+```java
+package hello.hellospring.service;
 
+import hello.hellospring.domain.Member;
+import hello.hellospring.repository.MemberRepository;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+@SpringBootTest
+@Transactional
+class MemberServiceIntegrationTest {
+
+    @Autowired MemberService memberService;
+    @Autowired MemberRepository memberRepository;
+
+    @Test
+    void 회원가입() {
+        // given : 상황이 주어졌을 때
+        Member member = new Member();
+        member.setName("test");
+
+        // when : 이거를 실행했을 때
+        Long saveId = memberService.join(member);
+
+        // then : 이거가 나와야 해
+        Member findMember = memberService.findOne(saveId).get();
+        assertThat(member.getName()).isEqualTo(findMember.getName());
+    }
+
+    @Test
+    public void 중복_회원_예외() {
+        // given
+        Member member1 = new Member();
+        member1.setName("test");
+
+        Member member2 = new Member();
+        member2.setName("test");
+        // when
+        memberService.join(member1);
+
+        IllegalStateException e = assertThrows(IllegalStateException.class, () -> memberService.join(member2));
+
+        assertThat(e.getMessage()).isEqualTo("이미 존재하는 회원입니다.");
+    }
+}
+```
+
+</br>
+
+- `@SpringBootTest` : 스프링 컨테이너와 테스트를 함께 실행하기 위한 어노테이션
+- `@Transactional` : 테스트 시작 전에 **트랜잭션을 시작**하고, 테스트 완료 후에 항상 **롤백**을 해주는 어노테이션. 이렇게 하면 DB에 데이터가 남지 않으므로 다음 테스트에 영향을 주지 않는다.
+  - 기존 테스트의 `@AfterEach`와 비슷한 역할을 한다.
+  - `@Transactional`을 사용했을 때와 안 했을 때의 DB 조회 결과
+  
+<p align=center>
+<img width="274" height="300" alt="스크린샷 2024-01-10 15 14 54" src="https://github.com/hamsangjin/TIL/assets/103736614/143152a1-b5d3-4e49-ae0c-4f0e34b229c2">
+<img width="274" height="300" alt="스크린샷 2024-01-10 15 14 29" src="https://github.com/hamsangjin/TIL/assets/103736614/f6a1e64d-82df-4e94-8ee6-87bee3ee491f">
+</p>
+
+</br>
+
+## 스프링 JdbcTemplate
+
+### 스프링 JdbcTemplate 회원 리포지토리
