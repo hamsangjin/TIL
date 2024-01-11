@@ -410,14 +410,237 @@ public class JdbcTemplateMemberRepository implements MemberRepository{
 
 ## JPA
 
+> JPA(Java Persisitence API) : 자바 진영의 ORM(Object-Relational Mapping) 기술 표준으로 사용되는 인터페이스의 모음이며, ORM의 표준 기술이다. </br>
+> 즉, 실제적으로 구현된것이 아니라 구현된 클래스와 매핑을 해주기 위해 사용되는 프레임워크이며, JPA를 구현한 대표적인 오픈소스로는 Hibernate가 있다. </br>
+
+- `ORM(Object-Relational Mapping)` : 객체와 RDB(Relational DataBase)의 테이블을 매핑한다는 뜻
+
 ### build.gradle 파일에 JPA, h2 데이터베이스 관련 라이브러리 추가
 
+
+**jpa 라이브러리**는 **jdbc**를 포함하므로 **jdbc 라이브러리** 부분을 주석처리해줬다.
+- **jpa**는 `EntityManager`로 모든 게 동작하는데, 이렇게 라이브러리에 **jpa**를 등록하면 스프링부트가 자동으로 `EntityManager`를 생성해주며 데이터베이스와 연결까지 해준다.
+
+- build.gradle
+```
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+//	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	runtimeOnly 'com.h2database:h2'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+```
+
+</br>
+
 ### 스프링 부트에 JPA 설정 추가
+- application.properties
+```
+spring.jpa.show-sql=true
+spring.jpa.hibernate.ddl-auto=none
+```
+
+- `spring.jpa.show-sql=true` : JPA가 생성하는 SQL을 출력
+- `spring.jpa.hibernate.ddl-auto=none` : JPA는 테이블을 자동으로 생성하는 기능을 제공하는데 `none`를 사용하면 해당 기능을 끈다.
+  - `create`를 사용하면 엔티티 정보를 바탕으로 테이블도 직접 생성해준다.
+
+</br>
 
 ### JPA 엔티티 매핑
 
+- main/java/hello/hello-spring/domain/Member.java
+```java
+package hello.hellospring.domain;
+
+import jakarta.persistence.*;
+
+@Entity
+public class Member {
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+// 만약 DB에 컬럼명이 username이라면 아래와 같이 어노테이션 붙여준다
+//    @Column(name = "username")
+    private String name;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+}
+```
+
+- `@Entity`를 붙여주면 jpa가 관리하는 entity가 되고, pk(기본 키)를 `@Id` 어노테이션을 이용해 매핑시켜준다.
+- 현재 pk인 `id`는 DB에서 자동 생성해주고 있는데 이 전략을 `IDENTITY 전략`이라고 한다.
+- 따라서, `@GeneratedValue(strategy = GenerationType.IDENTITY)`를 붙여준다.
+
+</br>
+
 ### JPA 회원 리포지토리
+
+- main/java/hello/hello-spring/repository/JpaMemberRepository.java
+```java
+package hello.hellospring.repository;
+
+import hello.hellospring.domain.Member;
+import jakarta.persistence.EntityManager;
+
+import java.util.List;
+import java.util.Optional;
+
+public class JpaMemberRepository implements MemberRepository{
+
+    private final EntityManager em;
+
+    public JpaMemberRepository(EntityManager em) {
+        this.em = em;
+    }
+
+    @Override
+    public Member save(Member member) {
+        em.persist(member);
+        return member;
+    }
+
+    @Override
+    public Optional<Member> findById(Long id) {
+        Member member = em.find(Member.class, id);
+        return Optional.ofNullable(member);
+    }
+
+    @Override
+    public Optional<Member> findByName(String name) {
+        List<Member> result = em.createQuery("select m from Member m where m.name = :name", Member.class)
+                .setParameter("name", name)
+                .getResultList();
+        return result.stream().findAny();
+    }
+
+    @Override
+    public List<Member> findAll() {
+        return em.createQuery("select m from Member m", Member.class)
+                .getResultList();
+    }
+}
+
+```
+
+- **`save()`** : `em.persist()` 메소드를 이용하면 `jpa`가 삽입 쿼리문을 다 만들어서 db에 반영하고, 또, 엔티티에 매핑해놓은 정보로 `id`도 자동으로 만들어준다.
+- **`findById()`** : 현재 **pk값은 id**이기 때문에 `em.find(조회할 타입, 식별자(pk값))` 메소드를 사용해 조회한다. `optional`로 반환을 하기 때문에 값이 없을 수도 있으므로, `ofNullable()`를 활용한다.
+- **`findByNames()`, `findAll()`**
+  - 단순히 특정 pk값의 객체를 조회할 때 `em.find()`를 사용했지만, 만약 조건이 더 복잡한 조회를 해야한다면 **JPQL**을 사용해야한다.
+  - **`JPQL`** : **객체지향**적으로 쿼리문을 작성할 수 있게 도와주는 **JPA가 제공하는 객체 지향 쿼리 언어**
+    - **JPQL**의 문법은 **SQL**과 비슷하지만, **엔티티 객체**를 대상으로 한다는 것이 다르며 JPQL은 특정 데이터베이스의 **SQL에 의존하지 않는다.**
+  - `getResultList()` : 결과를 리스트로 반환하고 없다면 빈 리스트를 반환하므로 `null`이 반환되더라도 상관없다.
+  - `setParameter()` : 파라미터로 쓰고싶은 변수 앞에 `:`를 붙여주고, 해당 변수에 값을 설정해준다.
+
+</br>
 
 ### 서비스 계층에 트랜잭션 추가
 
+- main/java/hello/hello-spring/service/MemberService.java
+```java
+import org.springframework.transaction.annotation.Transactional
 
+@Transactional
+public class MemberService {
+    ...
+}
+```
+
+- 스프링은 해당 클래스의 메소드를 실행할 때 트랜잭션을 시작하고, 메소드가 정상 종료되면 트랜잭션을 커밋한다. 만약 런타임 예외가 발생하면 롤백한다.
+- 따라서, JPA를 통한 모든 데이터 변경은 트랜잭션 안에서 실행해야 한다.
+
+</br>
+
+### JPA를 사용하도록 스프링 설정 변경
+
+늘 했던 것처럼, 스프링 설정을 변경해주자.
+
+- SpringConfig.java
+```
+package hello.hellospring.service;
+
+import hello.hellospring.repository.*;
+import hello.hellospring.service.MemberService;
+import jakarta.persistence.EntityManager;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import javax.sql.DataSource;
+
+@Configuration
+public class SpringConfig {
+
+//    private final DataSource dataSource;
+//
+//    @Autowired
+//    public SpringConfig(DataSource dataSource) {
+//        this.dataSource = dataSource;
+//    }
+
+    private EntityManager em;
+
+    public SpringConfig(EntityManager em) {
+        this.em = em;
+    }
+
+    @Bean
+    public MemberService memberService() {
+        return new MemberService(memberRepository());
+    }
+
+    @Bean
+    public MemberRepository memberRepository(){
+//        return new MemoryMemberRepository();
+//        return new JdbcMemberRepository(dataSource);
+//        return new JdbcTemplateMemberRepository(dataSource);
+        return new JpaMemberRepository(em);
+    }
+}
+```
+
+- 이제는 **DataSourece**가 아닌 **EntityManager**를 필요로 해 **EntityManager**로 의존성 주입을 해준다.
+
+</br>
+
+---
+
+</br>
+
+## 스프링 데이터 JPA
+
+### 스프링 데이터 JPA 회원 리포지토리
+
+</br>
+
+### 스프링 데이터 JPA 회원 리포지토리를 사용하도록 스프링 설정 변경
+
+</br>
+
+### 스프링 데이터 JPA 제공 클래스
+
+</br>
+
+### 스프링 데이터 JPA 제공 기능
+
+</br>
+
+---
+
+</br>
