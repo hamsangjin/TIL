@@ -625,19 +625,93 @@ public class SpringConfig {
 
 ## 스프링 데이터 JPA
 
+> 스프링 부트와 JPA만 사용을 해도 개발 생산성이 많이 증가하고, 개발해야 할 코드도 많이 줄어든다. </br>
+> 거기에 스프링 데이터 JPA를 사용하면 구현 클래스가 없어도 인터페이스만으로 개발을 할 수 있다. </br>
+> 그리고, 반복 개발했었던 기본 CRUD 기능도 스프링 데이터 JPA가 모두 제공을 하므로, 개발자는 핵심 비즈니스 로직을 개발하는데 집중할 수 있게된다. </br>
+
 ### 스프링 데이터 JPA 회원 리포지토리
+
+설정은 JPA 설정을 그대로 하면 된다.
+
+- main/java/hello/hello-spring/repository/SpringDataJpaMemberRepository.java
+```java
+package hello.hellospring.repository;
+
+import hello.hellospring.domain.Member;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
+
+public interface SpringDataJpaMemberRepository extends JpaRepository<Member,
+Long>, MemberRepository {
+	Optional<Member> findByName(String name);
+}
+```
+
+- 인터페이스가 인터페이스를 받을 땐 `implements`가 아닌 `extends`로 하며, 인터페이스는 다중 상속이 된다.
+- 스프링 데이터 JPA가 **JPA 리포지토리**를 받고있으면, 구현체를 자동으로 만들어 스프링 빈에 등록해준다.
 
 </br>
 
 ### 스프링 데이터 JPA 회원 리포지토리를 사용하도록 스프링 설정 변경
 
+- SpringConfig.java
+
+```java
+package hello.hellospring.service;
+
+import hello.hellospring.repository.*;
+import hello.hellospring.service.MemberService;
+import jakarta.persistence.EntityManager;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import javax.sql.DataSource;
+
+@Configuration
+public class SpringConfig {
+
+    // 아래와 같이 작성하면 스프링 데이터 JPA가 만들어놓은 구현체가 등록되고,
+    // 아래 MemberService에 의존관계를 세팅해주면 됨
+    private final MemberRepository memberRepository;
+
+    // 생성자가 하나라 어노테이션 생략 가능함
+    @Autowired
+    public SpringConfig(MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
+    }
+
+    @Bean
+    public MemberService memberService() {
+//        return new MemberService(memberRepository());
+        return new MemberService(memberRepository);
+    }
+}
+```
+
+- 스프링 데이터 **JPA**가 `SpringDataJpaMemberRepository.java`를 **스프링 빈**으로 자동 등록해준다.(프록시 기술)
+
 </br>
 
 ### 스프링 데이터 JPA 제공 클래스
+<p align=center>
+<img width="610" alt="스크린샷 2024-01-12 15 40 58" src="https://github.com/hamsangjin/TIL/assets/103736614/33481f58-7eb7-475f-b91d-54b0eda3c27a">
+</p>
 
 </br>
 
 ### 스프링 데이터 JPA 제공 기능
+
+위 이미지를 보고 JPA 제공 기능을 알아보자.
+
+- 인터페이스를 통한 기본적인 CRUD
+- `findByName()`, `findByEmail()`처럼 메소드 이름만으로 조회 기능 제공
+  - 공통적인 메소드들은 사용할 수 있지만, 내가 개발하려는 게 쇼핑몰이라고 가정했을 때, 주문 번호로 조회하려고 한다면 공통적인 메소드 사용이 어렵다.
+  - 이때 **메소드 이름**과 **메소드 매개변수**만 변경해준다면 다르게 사용이 가능하다.
+- 페이징 기능 자동 제공
+
+> 복잡한 동적 쿼리는 **Querydsl**이라는 라이브러리를 사용하면 되고, 아니면 네이티브 쿼리를 사용하면 된다.
 
 </br>
 
