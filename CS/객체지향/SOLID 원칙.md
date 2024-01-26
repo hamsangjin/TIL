@@ -6,11 +6,11 @@
 
 ## 목차
 
-- [단일 책임 원칙(SRP, Single Responsibility Principle)](#단일-책임-원칙(SRP,-Single-Responsibility-Principle))
-- [개방 폐쇄 원칙(OCP, Open Closed  Principle)](#개방-폐쇄-원칙(OCP,-Open-Closed-Principle))
-- [리스코프 치환 원칙(LSP, Liskov Substitution Principle)](#리스코프-치환-원칙(LSP,-Liskov-Substitution-Principle))
-- [인터페이스 분리 원칙(ISP, Interface Segregation Principle)](#인터페이스-분리-원칙(ISP,-Interface-Segregation-Principle))
-- [의존 역전 원칙(DIP, Dependency Inversion Principle)](#의존-역전-원칙(DIP,-Dependency-Inversion-Principle))
+- [단일 책임 원칙 SRP - Single Responsibility Principle](#단일-책임-원칙-srp---single-responsibility-principle)
+- [개방 폐쇄 원칙 OCP - Open Closed Principle](#개방-폐쇄-원칙-ocp---open-closed-principle)
+- [리스코프 치환 원칙 LSP - Liskov Substitution Principle](#리스코프-치환-원칙-lsp---liskov-substitution-principle)
+- [인터페이스 분리 원칙 ISP - Interface Segregation Principle](#인터페이스-분리-원칙-isp---interface-segregation-principle)
+- [의존 역전 원칙 DIP - Dependency Inversion Principle](#의존-역전-원칙-dip---dependency-inversion-principle)
 
 </br>
 
@@ -18,7 +18,7 @@
 
 </br>
 
-## 단일 책임 원칙(SRP, Single Responsibility Principle)
+## 단일 책임 원칙 SRP - Single Responsibility Principle
 
 > 클래스(객체)는 하나의 책임만 가져야한다는 원칙
 
@@ -39,7 +39,7 @@
 
 </br>
 
-## 개방 폐쇄 원칙(OCP, Open Closed  Principle)
+## 개방 폐쇄 원칙 OCP - Open Closed Principle
 
 > 클래스는 확장에는 열려있어야 하며, 수정에는 닫혀있어야 한다는 원칙
 
@@ -55,7 +55,7 @@ Java에서는 추상 클래스나 상속을 통한 클래스 관계 구축을 �
 
 </br>
 
-## 리스코프 치환 원칙(LSP, Liskov Substitution Principle)
+## 리스코프 치환 원칙 LSP - Liskov Substitution Principle
 
 > 하위 타입은 상위 타입을 대체할 수 있어야 한다는 원칙
 
@@ -71,7 +71,7 @@ Java에서는 추상 클래스나 상속을 통한 클래스 관계 구축을 �
 
 </br>
 
-## 인터페이스 분리 원칙(ISP, Interface Segregation Principle)
+## 인터페이스 분리 원칙 ISP - Interface Segregation Principle
 
 > 인터페이스를 각각 사용에 맞게끔 세분화해 분리해야 한다는 원칙
 
@@ -87,7 +87,7 @@ Java에서는 추상 클래스나 상속을 통한 클래스 관계 구축을 �
 
 </br>
 
-## 의존 역전 원칙(DIP, Dependency Inversion Principle)
+## 의존 역전 원칙 DIP - Dependency Inversion Principle
 
 > 어떤 클래스를 참조해서 사용해야한다면, 그 클래스를 직접 참조하는 것이 아니라 그 대상의 상위 요소인 추상클래스나 인터페이스를 참조하라는 원칙 
 
