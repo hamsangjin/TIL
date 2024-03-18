@@ -327,22 +327,41 @@ public class Calculator {
 
 ## JUnit의 테스트 관련 어노테이션
 
-- `@Before` : 각각의 테스트 메서드가 실행되기 전에 실행되는 메서드를 정의
-  - `@BeforrAll` : 테스트 클래스가 실행될 때 한 번 실행되는 메소드를 정의
-  - `@BeforeEach` : 각 테스트 메소드가 실행되기 전에 실행되는 메소드를 정의
-  - `@BeforeClass` : 모든 테스트 메서드가 실행되기 전에 한 번 실행되는 메소드를 정의
+- `@BeforrAll` : 테스트 클래스가 실행될 때 한 번 실행되는 메소드에 사용
+- `@BeforeEach` : 각 테스트 메소드가 실행되기 전에 실행되는 메소드에 사용
 
-- `@After` : 각각의 테스트 메서드가 실행된 후에 실행되는 메소드를 정의
-  - `@AfterAll` : 모든 테스트가 종료된 후 한 번 실행되는 메소드를 정의
-  - `@AfterEach` : 각 테스트 메소드가 실행된 후 실행되는 메소드를 정의
-  - `@Afterclass` : 모든 테스트 메서드가 실행된 후에 한 번 실행되는 메소드를 정의
+- `@AfterAll` : 모든 테스트가 종료된 후 한 번 실행되는 메소드에 사용
+- `@AfterEach` : 각 테스트 메소드가 실행된 후 실행되는 메소드에 사용
 
-- `@Test` : 단위 테스트를 수행하는 메소드를 정의
-  - `@Test(expected = SomeException.class)` : 해당 테스트가 특정 예외를 발생시켜야함을 나타냄
-  - `@Test(timeout = 1000)` : 해당 테스트가 특정 시간 안에 실행되어야 함을 나타냄
-  - `@TestConfiguration` : 테스트 설정을 지정하는 클래스임을 나타냄
+- `@Test` : 단위 테스트를 수행하는 메소드에 사용
 
-- `@lgnore` : 실행하지 않을 테스트 메소드를 정의
+- `@Disabled` : 테스트 클래스나 메소드를 비활성화할 때 사용
+
+- `@DisplayName` : 사용자 지정 표시 이름으로, test 메소드의 출력을 원하는 대로 설정 가능
+
+- `@Tag` : 테스트 케이스에 태그를 부여하고, 특정 태그를 가진 테스트만 실행하도록 구성 가능
+
+- `@Nested` : 관련된 테스트들을 내부 클래스로 그룹화 가능
+
+- `@Timeout` : 테스트 메소드나 전체 테스트 클래스에 대한 실행 시간을 제한 가능
+
+<br>
+
+---
+
+<br>
+
+## Assertions 클래스의 정적 메소드
+
+`import static org.junit.jupiter.api.Assertions.*;`라고 선언하고 사용 가능하다.
+
+- `assertEquals(expected, actual)` : 두 값이 같은지 확인
+
+- `assertTrue(condition)` : 조건이 참인지 확인
+
+- `assertNotNulL(value)` : 값이 `null`이 아닌지 확인
+
+- `asserthrows(exceptionclass, executable)` : 실행 시 지정된 예외가 발생하는지 확인
 
 <br>
 
