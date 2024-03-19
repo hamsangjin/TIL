@@ -148,3 +148,220 @@ static int med3(int a, int b, int c) {
   - `b가 큰 경우` : a와 c 비교
     - `a가 큰 경우` : 중앙값은 a
     - `b가 큰 경우` : b와 c를 비교해 더 작은 값이 중앙값
+
+<br>
+
+---
+
+<br>
+
+# 다중 루프 - 구구단
+
+중첩 for문을 사용한 구구단 곱셈표를 출력하는 간단한 코드를 작성해보자.
+
+## 코드
+```java
+public class Multi99Table {
+    public static void main(String[] args) {
+        System.out.println("-------------구구단 곱셈표-------------");
+
+        for(int i = 1; i <= 9; i++){
+            for(int j = 1; j <= 9; j++)     System.out.printf("%3d ", i*j);
+            System.out.println();
+        }
+    }
+}
+```
+
+## 코드 설명
+- `구구단 곱셈표 출력` : 프로그램은 먼저 `구구단 곱셈표`라는 제목을 출력하여 사용자에게 표의 내용을 알린다.
+- `중첩된 for 반복문`
+    - `바깥쪽 for문` :`1단부터 9단까지를 나타내는 i의 값`을 1부터 9까지 증가
+    - `안쪽 for문` : 각 단에 대해 1부터 9까지 곱하는 j의 값`을 증가시키면서, i와 j의 곱을 출력
+- `출력 형식 지정` : `System.out.printf()` 메소드를 사용하여 출력된 숫자가 일정한 폭(세 자리)을 가지도록 한다.
+- `줄바꿈 처리` : 각 단의 곱셈이 끝날 때마다 `System.out.println()` 을 호출하여 줄바꿈을 추가해준다.
+
+<br>
+
+---
+
+<br>
+
+# 다중 루프 - 직각 이등변 삼각형 출력
+사용자로부터 입력받은 단 수에 해당하는 왼쪽 아래가 직각인 이등변삼각형을 출력하는 코드를 작성해보자.
+
+## 코드
+```java
+import java.util.Scanner;
+
+public class TriangleLB {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("단 수를 입력해주세요 : ");
+        int n = sc.nextInt();
+
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j <= i; j++){
+                System.out.print("*");
+            }
+            System.out.println();
+        }
+    }
+}
+```
+
+## 코드 설명
+- `양수 입력 받기` : 사용자에게 삼각형을 그리기 위한 단수를 입력받는다.
+- `삼각형 그리기` : 입력받은 단수 `n`에 따라 왼쪽 아래가 직각인 이등변 삼각형을 그린다.
+    - `외부 for문` : 삼각형의 단을 의미
+    - `내부 for문` : 각 단에서의 별표를 출력하는 횟수를 의미
+- `줄바꿈 처리` : 내부 for 반복문이 종료될 때마다 `System.out.println()` 을 호출하여 줄바꿈을 해줌
+
+<br>
+
+---
+
+<br>
+
+# 배열
+
+## 배열 복제
+
+```java
+import java.util.Arrays;
+class DuplicateArray {
+    public static void main(String[] args) {
+        int[] original = {10, 20, 30, 40, 50};
+        int[] copied = original.clone(); // copied는 original의 복제본을 참조
+
+        copied[2] = 0; // copied 배열의 세 번째 요소를 0으로 변경
+
+        System.out.println("original = " + Arrays.toString(original));
+        System.out.println("copied = " + Arrays.toString(copied));
+    }
+}
+```
+`original` 배열이 변경되지 않고 `copied` 배열에서만 변경이 이루어졌음을 확인할 수 있다.
+
+- `clone()`: 배열의 복사본을 생성할 수 있는 메소드
+- `Arrays.toString()` : 배열의 주소가 아닌 내용을 출력해주는 메소드
+
+<br>
+
+## 난수로 배열 초기값 설정
+
+```java
+import java.util.Random;
+import java.util.Scanner;
+
+class MaxOfWeightsRand {
+    static int maxOf(int[] weights) {
+        int max = weights[0];
+
+        for(int i = 1; i < weights.length; i++){
+            if(weights[i] > max)  max = weights[i];
+        }
+
+        return max;
+    }
+
+    public static void main(String[] args) {
+        Random rand = new Random();
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("몸무게의 최댓값을 구합니다.");
+        System.out.print("사람 수: ");
+        int n = sc.nextInt();
+
+        int[] weights = new int[n];
+
+        for (int i = 0; i < n; i++){
+            weights[i] = 40 + (rand.nextInt(60) + 1);
+            System.out.println("weights[" + i + "] : " + weights[i]);
+        }
+
+        System.out.println("최댓값은 " + maxOf(weights) + "입니다.");
+    }
+}
+```
+
+- `Random` 클래스의 `nextInt(int range)` 메소드 : 예를 들어 `random.nextInt(40)`으로 작성한 경우 `0 ~ 39`의 범위로 동작하기 때문에 `+1`을 해줘야 한다.
+
+<br>
+
+## 배열 역순 정렬
+```java
+
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class ArrayReverseOrder {
+    public void swap(int[] a, int i, int j){
+        int temp = a[i];
+        a[i] = a[j];
+        a[j] = temp;
+    }
+
+    public void reverse(int[] a){
+        int n = a.length;
+        for(int i = 0; i < n / 2; i++){
+            swap(a, i, n-1-i);
+        }
+    }
+
+    public static void main(String[] args) {
+        ArrayReverseOrder arrayReverseOrder = new ArrayReverseOrder();
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("배열의 크기 : ");
+        int n = sc.nextInt();
+        int[] a = new int[n];
+
+        for(int i = 0; i < n; i++){
+            System.out.print(i+1 + "번째 요소의 값 : ");
+            a[i] = sc.nextInt();
+        }
+
+        System.out.println("역순 정렬 전 : " + Arrays.toString(a));
+        arrayReverseOrder.reverse(a);
+        System.out.println("역순 정렬 후 : " + Arrays.toString(a));
+    }
+}
+```
+
+- `swap()` : 배열과 바꿀 인덱스들이 주어지면 해당 배열의 인덱스끼리 교환해주는 메소드
+- `reverse()` : 배열을 역순으로 정렬해주는 메소드로, 앞의 요소는 `i`로, 뒷 요소는 `n-1-i`로 swap 메소드를 호출한다.
+
+<br>
+
+## 기수 변환
+
+### 분할과 나머지를 이용한 방법
+1. 원래의 수를 새 기수로 나누기
+2. 나눈 결과의 나머지를 저장
+3. 몫이 0이 될 때까지 1과 2의 과정을 반복
+4. 저장한 나머지들을 역순으로 저장하면 새로운 기수의 수가 된다.
+
+- 코드
+```java
+public class DecimalToBinaryExam {
+    public static void main(String[] args) {
+        int decimal = 29;
+
+        StringBuilder sb = new StringBuilder();
+
+        // 10진수 -> 2진수
+        // 몫이 0이 될 때까지 1과 2의 과정을 반복
+        while (decimal > 0) {
+            // 나눈 결과의 나머지 저장
+            int remainder = decimal % 2;
+            // 원래의 수를 새 기수로 나누기
+            decimal /= 2;
+            sb.append(remainder);
+        }
+        // 저장한 나머지들을 역순으로 출력
+        System.out.println(sb.reverse());
+    }
+}
+```
