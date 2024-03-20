@@ -185,11 +185,13 @@ public class ClassName{
 
 ### 클래스 생성
 ```java
-class Dog { // 필드
+class Dog {
+    // 필드
     String breed;
     int age;
     String color;
-    // 메서드
+파라
+    // 메소드
     void bark() {
         System.out.println("Woof!");
     }
@@ -217,3 +219,80 @@ public class DogTest {
 }
 ```
 - `Dog 클래스`의 객체를 생성하고, 필드에 값을 할당한 다음, 메소드를 호출한다.
+
+<br>
+
+---
+
+<br>
+
+# 검색
+
+> `검색` : 데이터 집합에서 특정 값을 찾는 과정을 말하며, 프로그래밍에서는 다양한 데이터 구조 내에서 원하는 데이터를 찾기 위해 검색 알고리즘을 사용한다.
+> `키` : 검색 과정에서 찾고자 하는 값
+
+<br>
+
+## 1. 순차 검색(Sequential Search)
+> `순차 검색` : 배열의 첫 번째 요소부터 시작해서, 각 요소를 키 값과 비교하며 검색하는 방법으로, 배열이 정렬되어 있지 않아도 적용할 수 있으며, 구현이 간단하지만 데이터가 커질 수록 비효율적이다.
+
+- 예시
+```java
+public class SequentialSearch {
+    public static int sequentialSearch(int[] array, int key) {
+        for (int i = 0; i < array.length; i++) {
+            if (array[i] == key)
+                return i;
+        }
+        return -1;
+    }
+
+    public static void main(String[] args) {
+        int[] arr = {4, 6, 3, 1, 2, 5};
+        int target = 4;
+
+        System.out.printf("%d는 arr[%d]에 있습니다.", target, sequentialSearch(arr, target));
+    }
+}
+```
+<br>
+
+> `보초법` : 검색하고자 하는 키 값과 동일한 값을 배열의 맨 끝을 추가해, 배열을 탐색하는 동안 배열의 끝에 도달했는지 확인하는 조건 검사를 생략함으로써, 약간의 성능 향상을 기대할 수 있다. 하지만, 배열을 수정하는 번거로움이 있고 특정 상황에서의 성능 이점이 부족하다.
+
+<br>
+
+## 2. 이진 검색(Binary Search)
+> `이진 검색` : 정렬된 배열에서 중간 지점의 값을 키와 비교하여 검색 범위를 반으로 줄이면서 검색하는 방법으로, 순차검색에 비해 훨씬 빠른 검색 속도를 제공하지만, 검색 전엔 배열이 정렬되어 있어야 한다.
+
+- 예시
+```java
+import java.util.Arrays;
+
+public class BinarySearch {
+    public static int binarySearch(int[] array, int key) {
+        int low = 0;
+        int high = array.length - 1;
+        while (low <= high) {
+            int mid = (low + high) / 2;
+
+            if(array[mid] == key)  return mid;
+            else if(array[mid] < key)  low = mid + 1;
+            else    high = mid - 1;
+        }
+        return -1;
+    }
+
+    public static void main(String[] args) {
+        int[] arr = {4, 6, 3, 1, 2, 5};
+        int target = 7;
+
+        Arrays.sort(arr);
+
+        int find = binarySearch(arr, target);
+        if(find >= 0)  System.out.printf("%d는 arr[%d]에 있습니다.", target, find);
+        else System.out.printf("%d는 arr에 존재하지 않습니다.", target);
+    }
+}
+```
+
+- 이진 검색은 시간 복잡도 O(log n)을 가진다.
