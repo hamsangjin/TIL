@@ -42,12 +42,12 @@ html과 css를 공부하며, 나만의 이력서 양식을 적어보자 !!
 ```
 
 ### head 태그
-```java
+```html
 <head></head>
 ```
 
 ### body 태그
-```java
+```html
 <body></body>
 ```
 
@@ -320,6 +320,10 @@ footer{
 
 - `font-weight`: 글씨체의 두께를 설정
 - `box-shadow: 그림자x축 그림자y축 블러값 그림자크기 그림자색깔(R,G,B,투명도)`: div 박스에 그림자를 설정
+
+<br>
+
+---
 
 <br>
 
