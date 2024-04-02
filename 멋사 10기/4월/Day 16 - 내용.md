@@ -234,3 +234,237 @@ array[6]();
 const[a, b, c, d, e, f, g, h] = array;
 console.log(a);
 ```
+
+<br>
+
+## 반복문
+`반복문`은 특정 작업을 반복자적으로 할 때 사용할 수 있는 구문이다.
+
+- 예제 코드
+```javascript
+/*
+for (초기 구문; 조건 구문; 변화 구문;) { 코드
+}
+*/
+
+// for문을 이용한 기본적인 0 ~ 9까지의 출력문
+for (let i = 0; i < 10; i++) {
+    console.log(i);
+}
+
+// for문을 이용한 배열 출력문
+const names = ['멍멍이', '야옹이', '멍뭉이'];
+for (let i = 0; i < names.length; i++) {
+    console.log(names[i]);
+}
+
+// while문
+let i = 0;
+while (i < 10) {
+    console.log(i);
+    i++;
+}
+
+// for-of
+let numbers = [10, 20, 30, 40, 50];
+for (let number of numbers) {
+    console.log(number);
+}
+
+
+// for-in
+const doggy = { name: '멍멍이', sound: '멍멍', age: 2};
+for (let key in doggy) {
+    console.log(`${key}: ${doggy[key]}`);
+}
+```
+
+<br>
+
+## 배열 내장함수
+
+### forEach
+`forEach`는 for문을 대체시킬 수 있는 내장함수이다.
+
+- 예제 코드
+```javascript
+const superheroes = ['아이언맨', '캡틴 아메리카', '토르', '닥터 스트레인지'];
+
+console.log(superheroes);
+
+const hi = function(name) {
+    console.log("I am " + name);
+};
+
+// 아래 세가지는 다 똑같은 동작을 함
+// 매개변수로 함수 호출
+superheroes.forEach(hi);
+
+// 매개변수에 함수 정의
+superheroes.forEach(function(name){
+    console.log("I am " + name);
+});
+// 매개변수에 익명함수 정의
+superheroes.forEach((name) => console.log("I am " + name));
+```
+
+### map
+`map`은 배열 안의 각 원소를 변환할 때 사용되며, 그 과정에서 새로운 배열이 만들어진다.
+
+- 예제 코드
+```javascript
+const array = [1, 2, 3, 4, 5, 6, 7, 8];
+        
+// 기본 for문
+const squared1 = [];
+for (let i = 0; i < array.length; i++) {
+    squared1.push(array[i] * array[i]);
+}
+console.log(squared1);
+
+// forEach 함수 사용
+const squared2 = [];
+array.forEach(n => squared2.push(n * n));
+console.log(squared2);
+
+// map 사용
+const squared3 = array.map(n => n * n);
+console.log(squared3);
+```
+
+<br>
+
+### indexOf, findIndex, find, filter
+- `indexOf`, `findIndex`: 두 함수는 원하는 항목이 몇 번째 원소인지 찾아주는 함수
+- `indexOf`: 배열 안에 있는 값이 숫자, 문자열, 또는 불리언일 때 사용
+- `findIndex`: 배열 안에 있는 값이 객체이거나 배열일 때 사용한다.
+- `find`는 `findIndex`와 비슷하지만, 찾아낸 값이 몇 번째인지 알아내는 것이 아니라 찾아낸 값을 반환
+- `filter`: 배열에서 특정 조건을 만족하는 값들만 따로 추출하여 새로운 배열을 만듦
+
+- 예제 코드
+```javascript
+const superheroes = ['아이언맨', '캡틴 아메리카', '토르', '닥터 스트레인지']; const index1 = superheroes.indexOf('토르');
+console.log(index1);
+
+const todos = [
+    {
+        id: 1,
+        text: '자바스크립트 입문',
+        done: true
+    },
+    {
+        id: 2,
+        text: '함수 배우기',
+        done: true
+    },
+    {
+        id: 3,
+        text: '객체와 배열 배우기',
+        done: true
+    },
+    {
+        id: 4,
+        text: '배열 내장함수 배우기',
+        done: false
+    }
+];
+
+const index2 = todos.findIndex(todo => todo.id === 3);
+console.log(index2);
+
+const todoFind = todos.find(todo => todo.id === 3);
+console.log(todoFind);
+
+const tasksNotDone = todos.filter(todo => todo.done === false);
+// todos.filter(todo => !todo.done);
+console.log(tasksNotDone);
+```
+
+<br>
+
+## splice, slice
+- `splice`: 배열에서 특정 항목을 제거할 때 사용
+- `slice`: 기존의 배열을 건드리지 않고 새로운 배열로 생성
+
+- 예제 코드
+```javascript
+const numbers1 = [10, 20, 30, 40];
+const index = numbers1.indexOf(30);
+numbers1.splice(index, 1);
+console.log(numbers1);
+
+const numbers2 = [10, 20, 30, 40];
+const sliced = numbers2.slice(0, 2); // 0부터 시작해서 2전까지
+console.log(sliced);
+console.log(numbers2);
+```
+
+<br>
+
+## shift, pop
+- `shitf`: 첫 번째 원소를 배열에서 추출하고, 그 원소는 배열에서 삭제된다.
+- `unshift`: 맨 앞에 원소를 추가한다.
+- `pop`: 마지막 원소를 배열에서 추출하고, 그 원소는 배열에서 삭제된다.
+- `push`: 맨 뒤에 원소를 추가한다.
+
+- 예제 코드
+```javascript
+const numbers1 = [10, 20, 30, 40];
+const value1 = numbers1.shift();
+console.log(value1);
+console.log(numbers1);
+
+numbers1.unshift(10);
+console.log(numbers1);
+
+const numbers2 = [10, 20, 30, 40];
+const value2 = numbers2.pop();
+console.log(value2);
+console.log(numbers2);
+
+numbers2.push(40);
+console.log(numbers2);
+```
+
+<br>
+
+## concat
+- `concat`: 여러 개의 배열을 하나의 배열로 합쳐줌
+
+- 예제 코드
+```javascript
+const arr1 = [1, 2, 3];
+const arr2 = [4, 5, 6];
+const concated = arr1.concat(arr2);
+console.log(concated);
+```
+
+<br>
+
+## join
+- `join`: 배열 안의 값들을 문자열 형태로 합쳐준다.
+
+- 예제 코드
+```javascript
+const array = [1, 2, 3, 4, 5];
+console.log(array.join());       // 1,2,3,4,5
+console.log(array.join(' '));    // 1 2 3 4 5
+console.log(array.join(', '));   // 1, 2, 3, 4, 5
+```
+
+<br>
+
+## reduce
+- `reduce`: 배열의 각 요소를 순회하며 callback함수의 실행 값을 누적하여 하나의 결과값을 반환
+
+- 예제 코드
+```javascript
+
+const numbers = [1, 2, 3, 4, 5];
+let sum1 = 0;
+numbers.forEach(n => sum1 += n);
+console.log(sum1);
+
+let sum2 = numbers.reduce((accumulator, current) => accumulator + current, 0);
+console.log(sum2);
+```
