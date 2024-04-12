@@ -185,6 +185,7 @@ public class AccountNotFoundException extends Exception{
     }
 }
 ```
+
 ### DuplicateAccountNumberException 클래스
 ```java
 public class DuplicateAccountNumberException extends Exception{
@@ -193,6 +194,7 @@ public class DuplicateAccountNumberException extends Exception{
     }
 }
 ```
+
 ### WrongPasswordException 클래스
 ```java
 public class WrongPasswordException extends Exception{
@@ -201,6 +203,7 @@ public class WrongPasswordException extends Exception{
     }
 }
 ```
+
 ### BankExam 클래스
 ```java
 public class BankExam {
@@ -235,3 +238,6 @@ public class BankExam {
     }
 }
 ```
+
+### 결과 사진
+<img width="502" alt="스크린샷 2024-04-12 11 24 58" src="https://github.com/hamsangjin/TIL/assets/103736614/44bc3ca7-b9da-4386-a51d-68894d84a9b6">
