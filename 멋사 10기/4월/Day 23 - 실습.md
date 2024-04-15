@@ -173,21 +173,17 @@ public static void removeQuit(){
 ### 4. 결과 출력
 ```java
 public static void printScores(){
-    int wordSum = 0;
     int charSum = 0;
-    int[] charMax = {0, 0};
-
+    int charMax = 0;
+    
     for (int i = 0; i < list.size(); i++) {
         String temp = list.get(i);
         System.out.println(temp);
-
-        wordSum ++;
+    
         charSum += temp.length();
-        if(charMax[1] < temp.length()){
-            charMax[0] = i;
-            charMax[1] = temp.length();
-        }
+        if(list.get(charMax).length() < list.get(i).length())   charMax = i;
     }
-    System.out.println("가장 긴 단어는 " + list.get(charMax[0]) + "이며, 길이는 " + charMax[1] + "입니다.");
-}
+    System.out.println("가장 긴 단어는 " + list.get(charMax) + "이며, 길이는 " + list.get(charMax).length() + "입니다.");
+    System.out.println("단어의 개수: " + list.size() + ", 글자 수: " + charSum);
+    }
 ```
