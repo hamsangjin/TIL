@@ -73,7 +73,7 @@ DI 컨테이너에서 관리되는 빈의 생명주기는 크게 다음의 세�
 <img width="536" alt="스크린샷 2024-05-13 18 32 57" src="https://github.com/hamsangjin/TIL/assets/103736614/919263ea-285d-4b54-9bbc-947a30956e2d">
 
 1. 스프링이 빈을 `인스턴스화` 한다.
-2. 스프링이 값과 빈의 레퍼런스를 빈의 프로퍼티로 주입`한다.
+2. 스프링이 값과 빈의 레퍼런스를 빈의 프로퍼티로 주입한다.
 3. 빈이 `BeanNameAware`를 구현하면 스프링이 `빈의 ID`를 `setBeanName()`메소드에 넘긴다.
 4. 빈이 `BeanFactoryAware`를 구현하면 `setBeanFactory()`메소드를 호출하여 빈 팩토리 전체를 넘긴다.
 5. 빈이 `ApplicationContextAware`를 구현하면 스프링이 `setApplicationContext()`메소드를 호출하고 둘러싼 애플리케이션 컨텍스트에 대한 참조를 넘긴다.
