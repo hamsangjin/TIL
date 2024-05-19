@@ -213,6 +213,8 @@ public class AopExamApplication01 {
 위 그림으로 이해가 안 가면 아래 그림으로 이해하면 편하다 !
 ![image](https://github.com/hamsangjin/TIL/assets/103736614/42b0893a-d2a0-40a4-90d3-d708e12ca343)
 
+<br>
+
 ## Spring MVC 간단한 예시 코드
 
 - `application.yml`
