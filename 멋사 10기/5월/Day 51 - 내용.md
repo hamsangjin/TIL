@@ -393,24 +393,34 @@ JPA에서 `상속 매핑 전략`은 객체 지향 모델에서의 상속 구조�
 ### 단일 테이블 전략 예제 코드
 - `Vehicle.java`
 ```java
+package com.example.jpa;
+
+import jakarta.persistence.*;
+import lombok.*;
+
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)       // 단일 테이블 전략: 상속 관계의 모든 엔티티를 하나의 테이블에 저장합니다.
+// 테이블에 엔티티의 실제 타입을 구분하기 위한 구분 컬럼을 추가
+// 구분 컬럼의 이름을 type으로 지정, 구분 컬럼의 데이터 타입을 문자열로 지정
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
+@Getter@Setter
 public abstract class Vehicle {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String manufacturer;
 }
-
 @Entity
-@DiscriminatorValue("CAR")
-public class Car extends Vehicle {
+@DiscriminatorValue("CAR")  // 단일 테이블에서 이 클래스의 레코드는 구분 값이 'CAR'로 저장
+@Getter@Setter
+class Car extends Vehicle {
     private int seatCount;
 }
+
 @Entity
-@DiscriminatorValue("TRUCK")
-public class Truck extends Vehicle {
+@DiscriminatorValue("TRUCK") // 단일 테이블에서 이 클래스의 레코드는 구분 값이 'TRUCK'로 저장
+@Getter@Setter
+class Truck extends Vehicle {
     private double payloadCapacity;
 }
 ```
